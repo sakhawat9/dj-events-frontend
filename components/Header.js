@@ -1,9 +1,21 @@
-import React from 'react'
+import Link from "next/link";
+import { FaSignInAlt, FaSignOutAlt } from "react-icons/fa";
+import styles from "../styles/Header.module.css";
 
 export default function Header() {
   return (
-    <div>
-      This is header
-    </div>
-  )
+    <header className={styles.header}>
+      <div className={styles.logo}>
+        <Link href="/">DJ Events</Link>
+      </div>
+
+      <nav>
+        <ul>
+          <li>
+            <Link href="/events">Events</Link>
+          </li>
+        </ul>
+      </nav>
+    </header>
+  );
 }
