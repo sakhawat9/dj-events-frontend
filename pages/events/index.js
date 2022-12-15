@@ -10,7 +10,7 @@ export default function EventsPage({ events, page, total }) {
       <h1>Events</h1>
       {events.length === 0 && <h3>No events to show</h3>}
 
-      {events.map((evt) => (
+      {events.data.map((evt) => (
         <EventItem key={evt.id} evt={evt} />
       ))}
 
