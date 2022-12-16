@@ -8,6 +8,8 @@ import { API_URL } from '@/config/index'
 export default function SearchPage({ events }) {
   const router = useRouter()
 
+  console.log(events.data);
+
   return (
     <Layout title='Search Results'>
       <Link href='/events'>Go Back</Link>
