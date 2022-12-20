@@ -1,7 +1,5 @@
 import Link from "next/link";
-import { FaSignInAlt, FaSignOutAlt } from "react-icons/fa";
 import styles from "@/styles/Header.module.css";
-import Search from "./Search";
 
 export default function Header() {
   return (
@@ -10,17 +8,13 @@ export default function Header() {
         <Link href="/">DJ Events</Link>
       </div>
 
-      <Search />
-
       <nav>
         <ul>
           <li>
             <Link href="/events">Events</Link>
           </li>
           <li>
-            <Link href="/events/add">
-              Add Events
-            </Link>
+            <Link href="/events/add">Add Events</Link>
           </li>
         </ul>
       </nav>
