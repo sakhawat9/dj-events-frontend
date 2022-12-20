@@ -1,7 +1,9 @@
 import React from "react";
 
 const EventItem = () => {
-  return <div>EventItem</div>;
+  return <div>
+    
+  </div>;
 };
 
 export default EventItem;
