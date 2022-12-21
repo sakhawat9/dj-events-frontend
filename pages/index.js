@@ -4,13 +4,13 @@ import Link from "next/link";
 import { API_URL } from "../config";
 
 export default function HomePage({ event }) {
-  console.log(event);
+  console.log(event.data);
   return (
     <Layout>
       <h1>Events</h1>
       {event.length === 0 && <h3>NO EVENT TO SHOW</h3>}
 
-      {event.map((evt) => (
+      {event?.data?.map((evt) => (
         <EventItem key={evt.id} evt={evt} />
       ))}
 
@@ -24,11 +24,11 @@ export default function HomePage({ event }) {
 }
 
 export async function getStaticProps() {
-  const res = await fetch(`${API_URL}/event`);
+  const res = await fetch(`${API_URL}/events?populate=*`);
   const event = await res.json();
 
   return {
-    props: { event: event.slice(0, 3) },
+    props: { event },
     revalidate: 1,
   };
 }

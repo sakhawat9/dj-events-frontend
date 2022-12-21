@@ -6,29 +6,33 @@ import EventMap from "@/components/EventMap";
 import Link from "next/link";
 import Image from "next/image";
 
-export default function EventPage({ evt }) {
+export default function EventPage({ events, slug }) {
+  const event = events.filter((evt) => evt?.attributes.slug === slug);
+  const {attributes} = event[0];
+  const {date, image, time, name, performers, venue, description, address } = attributes;
+
   return (
     <Layout>
       <div className={styles.event}>
         <span>
-          {new Date(evt.date).toLocaleDateString("en-US")} at {evt.time}
+          {new Date(date).toLocaleDateString("en-US")} at {time}
         </span>
-        <h1>{evt.name}</h1>
+        <h1>{name}</h1>
         <ToastContainer />
-        {evt.image && (
+        {image && (
           <div className={styles.image}>
-            <Image src={evt.image} width={960} height={600} />
+            <Image src={image.data.attributes.url} width={960} height={600} alt={name} />
           </div>
         )}
 
         <h3>Performers:</h3>
-        <p>{evt.performers}</p>
+        <p>{performers}</p>
         <h3>Description:</h3>
-        <p>{evt.description}</p>
-        <h3>Venue: {evt.venue}</h3>
-        <p>{evt.address}</p>
+        <p>{description}</p>
+        <h3>Venue: {venue}</h3>
+        <p>{address}</p>
 
-        <EventMap evt={evt} />
+        <EventMap evt={attributes} />
 
         <Link className={styles.back} href="/events">
           {"<"} Go Back
@@ -65,12 +69,14 @@ export default function EventPage({ evt }) {
 // }
 
 export async function getServerSideProps({ query: { slug } }) {
-  const res = await fetch(`${API_URL}/event/${slug}`);
-  const events = await res.json();
+  const res = await fetch(`${API_URL}/events?populate=*`);
+  const allEvents = await res.json();
+  const events = allEvents.data;
 
   return {
     props: {
-      evt: events[0],
+      events,
+      slug,
     },
   };
 }
