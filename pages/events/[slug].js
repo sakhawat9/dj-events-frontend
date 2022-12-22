@@ -5,25 +5,57 @@ import styles from "@/styles/Event.module.css";
 import EventMap from "@/components/EventMap";
 import Link from "next/link";
 import Image from "next/image";
+import { FaTimes } from "react-icons/fa";
+import { useRouter } from "next/router";
 
 export default function EventPage({ events, slug }) {
+  const router = useRouter()
+
   const event = events.filter((evt) => evt?.attributes.slug === slug);
-  const {attributes} = event[0];
-  const {date, image, time, name, performers, venue, description, address } = attributes;
+  const { attributes } = event[0];
+  const { date, image, time, name, performers, venue, description, address } =
+    attributes;
+
+  const deleteEvent = async (e) => {
+    if (confirm("Are you sure?")) {
+      const res = await fetch(`${API_URL}/events/${event[0].id}`, {
+        method: "DELETE",
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        toast.error(data.message);
+      } else {
+        router.push("/events");
+      }
+    }
+  };
 
   return (
     <Layout>
       <div className={styles.event}>
+        <div className={styles.controls}>
+          <Link href={`/events/edit/${event[0].id}`}>Edit Event</Link>
+          <a href="#" className={styles.delete} onClick={deleteEvent}>
+            <FaTimes /> Delete Event
+          </a>
+        </div>
         <span>
           {new Date(date).toLocaleDateString("en-US")} at {time}
         </span>
         <h1>{name}</h1>
         <ToastContainer />
-        {image && (
+        {/* {image && (
           <div className={styles.image}>
-            <Image src={image.data.attributes.url} width={960} height={600} alt={name} />
+            <Image
+              src={image.data.attributes.url}
+              width={960}
+              height={600}
+              alt={name}
+            />
           </div>
-        )}
+        )} */}
 
         <h3>Performers:</h3>
         <p>{performers}</p>

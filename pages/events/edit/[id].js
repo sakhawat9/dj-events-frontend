@@ -1,3 +1,4 @@
+import moment from 'moment'
 import { parseCookies } from "@/helpers/index";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -8,15 +9,17 @@ import Layout from "@/components/Layout";
 import { API_URL } from "@/config/index";
 import styles from "@/styles/Form.module.css";
 
-export default function AddEventPage() {
+export default function EditEventPage({ evt }) {
+  const { name, performers, venue, address, data, time, description} = evt.data.attributes;
+
   const [values, setValues] = useState({
-    name: "",
-    performers: "",
-    venue: "",
-    address: "",
-    date: "",
-    time: "",
-    description: "",
+    name: name,
+    performers: performers,
+    venue: venue,
+    address: address,
+    date: data,
+    time: time,
+    description: description,
   });
 
   const router = useRouter();
@@ -33,11 +36,12 @@ export default function AddEventPage() {
       toast.error("Please fill in all fields");
     }
 
-    const res = await fetch(`${API_URL}/events`, {
-      method: "POST",
+    const res = await fetch(`${API_URL}/events/${evt.data.id}`, {
+      method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({data: values}),
+      body: JSON.stringify(values),
     });
+    console.log(res);
 
     if (!res.ok) {
       // if (res.status === 403 || res.status === 401) {
@@ -47,7 +51,7 @@ export default function AddEventPage() {
       toast.error("Something Went Wrong");
     } else {
       const evt = await res.json();
-      router.push(`/events/${evt.data.attributes.slug}`);
+      router.push(`/events/${evt.slug}`);
     }
   };
 
@@ -59,7 +63,7 @@ export default function AddEventPage() {
   return (
     <Layout title="Add New Event">
       <Link href="/events">Go Back</Link>
-      <h1>Add Event</h1>
+      <h1>Edit Event</h1>
       <ToastContainer />
       <form onSubmit={handleSubmit} className={styles.form}>
         <div className={styles.grid}>
@@ -109,7 +113,7 @@ export default function AddEventPage() {
               type="date"
               name="date"
               id="date"
-              value={values.date}
+              value={moment(values.date).format('yyyy-MM-DD')}
               onChange={handleInputChange}
             />
           </div>
@@ -136,18 +140,21 @@ export default function AddEventPage() {
           ></textarea>
         </div>
 
-        <input type="submit" value="Add Event" className="btn" />
+        <input type="submit" value="Update Event" className="btn" />
       </form>
     </Layout>
   );
 }
 
-// export async function getServerSideProps({ req }) {
-//   const { token } = parseCookies(req)
+export async function getServerSideProps({ params: { id }, req }) {
+  console.log("id", id);
 
-//   return {
-//     props: {
-//       token,
-//     },
-//   }
-// }
+  const res = await fetch(`${API_URL}/events/${id}`);
+  const evt = await res.json();
+
+  return {
+    props: {
+      evt,
+    },
+  };
+}
