@@ -9,7 +9,7 @@ import { FaTimes } from "react-icons/fa";
 import { useRouter } from "next/router";
 
 export default function EventPage({ events, slug }) {
-  const router = useRouter()
+  const router = useRouter();
 
   const event = events.filter((evt) => evt?.attributes.slug === slug);
   const { attributes } = event[0];
@@ -46,16 +46,20 @@ export default function EventPage({ events, slug }) {
         </span>
         <h1>{name}</h1>
         <ToastContainer />
-        {/* {image && (
+        {image && (
           <div className={styles.image}>
             <Image
-              src={image.data.attributes.url}
+              src={
+                image.data !== null
+                  ? image.data?.attributes.url
+                  : "/images/event-default.png"
+              }
               width={960}
               height={600}
               alt={name}
             />
           </div>
-        )} */}
+        )}
 
         <h3>Performers:</h3>
         <p>{performers}</p>
