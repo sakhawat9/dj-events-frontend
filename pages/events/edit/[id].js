@@ -1,4 +1,4 @@
-import moment from 'moment'
+import moment from "moment";
 import { parseCookies } from "@/helpers/index";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -10,7 +10,8 @@ import { API_URL } from "@/config/index";
 import styles from "@/styles/Form.module.css";
 
 export default function EditEventPage({ evt }) {
-  const { name, performers, venue, address, data, time, description} = evt.data.attributes;
+  const { name, performers, venue, address, data, time, description } =
+    evt.data.attributes;
 
   const [values, setValues] = useState({
     name: name,
@@ -39,9 +40,8 @@ export default function EditEventPage({ evt }) {
     const res = await fetch(`${API_URL}/events/${evt.data.id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(values),
+      body: JSON.stringify({ data: values }),
     });
-    console.log(res);
 
     if (!res.ok) {
       // if (res.status === 403 || res.status === 401) {
@@ -51,7 +51,7 @@ export default function EditEventPage({ evt }) {
       toast.error("Something Went Wrong");
     } else {
       const evt = await res.json();
-      router.push(`/events/${evt.slug}`);
+      router.push(`/events/${evt.data.attributes.slug}`);
     }
   };
 
@@ -113,7 +113,7 @@ export default function EditEventPage({ evt }) {
               type="date"
               name="date"
               id="date"
-              value={moment(values.date).format('yyyy-MM-DD')}
+              value={moment(values.date).format("yyyy-MM-DD")}
               onChange={handleInputChange}
             />
           </div>
