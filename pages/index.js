@@ -4,7 +4,7 @@ import Link from "next/link";
 import { API_URL } from "../config";
 
 export default function HomePage({ event }) {
-  console.log("event", event);
+
   return (
     <Layout>
       <h1>Events</h1>
