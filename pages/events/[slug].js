@@ -1,4 +1,5 @@
-import { ToastContainer } from "react-toastify";
+import { parseCookies } from "@/helpers/index";
+import { toast, ToastContainer } from "react-toastify";
 import Layout from "@/components/Layout";
 import { API_URL } from "@/config/index";
 import styles from "@/styles/Event.module.css";

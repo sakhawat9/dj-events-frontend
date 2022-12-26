@@ -3,9 +3,10 @@ import { FaPencilAlt, FaTimes } from 'react-icons/fa'
 import styles from '@/styles/DashboardEvent.module.css'
 
 export default function DashboardEvent({ evt, handleDelete }) {
+  console.log(evt);
   return (
     <div className={styles.event}>
-      <h4>
+      {/* <h4>
         <Link href={`/events/${evt.slug}`}>
           <a>{evt.name}</a>
         </Link>
@@ -21,7 +22,7 @@ export default function DashboardEvent({ evt, handleDelete }) {
         onClick={() => handleDelete(evt.id)}
       >
         <FaTimes /> <span>Delete</span>
-      </a>
+      </a> */}
     </div>
   )
 }
