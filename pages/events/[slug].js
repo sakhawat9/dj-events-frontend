@@ -79,6 +79,7 @@ export default function EventPage({ events, slug }) {
   );
 }
 
+
 // export async function getStaticPaths() {
 //   const res = await fetch(`${API_URL}/events`)
 //   const events = await res.json()
