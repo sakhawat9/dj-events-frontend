@@ -10,10 +10,12 @@ import { FaTimes } from "react-icons/fa";
 import { useRouter } from "next/router";
 
 export default function EventPage({ events, slug }) {
+
   const router = useRouter();
 
   const event = events.filter((evt) => evt?.attributes.slug === slug);
   const { attributes } = event[0];
+
   const { date, image, time, name, performers, venue, description, address } =
     attributes;
 

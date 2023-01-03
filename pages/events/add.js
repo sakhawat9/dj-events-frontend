@@ -7,64 +7,87 @@ import Link from "next/link";
 import Layout from "@/components/Layout";
 import { API_URL } from "@/config/index";
 import styles from "@/styles/Form.module.css";
+import { useFormik } from "formik";
 
 export default function AddEventPage({ token }) {
-  const [values, setValues] = useState({
-    name: "",
-    performers: "",
-    venue: "",
-    address: "",
-    date: "",
-    time: "",
-    description: "",
+  let router = useRouter();
+  const formik = useFormik({
+    initialValues: {
+      name: "",
+      performers: "",
+      venue: "",
+      address: "",
+      date: "",
+      time: "",
+      description: "",
+    },
+
+    onSubmit: async (values) => {
+      const formData = new FormData();
+      const data = {
+        name: values.name,
+        performers: values.performers,
+        venue: values.venue,
+        address: values.address,
+        date: values.date,
+        time: values.time,
+        description: values.description,
+      };
+      // Validation
+      const hasEmptyFields = Object.values(values).some(
+        (element) => element === ""
+      );
+
+      if (hasEmptyFields) {
+        toast.error("Please fill in all fields");
+      }
+      formData.append("data", JSON.stringify(data));
+
+      //image-file
+      formData.append("files.image", values.imageFile);
+
+      //for upload page
+      const uploadData = new FormData();
+      uploadData.append("files", values.imageFile);
+
+      // simple create new collection with JSON
+      const res = await fetch("http://localhost:1337/api/events", {
+        method: "POST",
+        body: formData,
+        headers: {},
+      });
+
+      if (!res.ok) {
+        if (res.status === 403 || res.status === 401) {
+          toast.error("No token included");
+          return;
+        }
+        toast.error("Something Went Wrong");
+      } else {
+        const evt = await res.json();
+        router.push(`/events/${evt.data.attributes.slug}`);
+      }
+
+      //upload file to uploads
+      const uploadFile = await fetch("http://localhost:1337/api/upload", {
+        method: "POST",
+        body: uploadData,
+        headers: {},
+      });;
+    },
   });
 
-  const router = useRouter();
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    // Validation
-    const hasEmptyFields = Object.values(values).some(
-      (element) => element === ""
-    );
-
-    if (hasEmptyFields) {
-      toast.error("Please fill in all fields");
-    }
-
-    const res = await fetch(`${API_URL}/events`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ data: values }),
-    });
-
-    if (!res.ok) {
-      if (res.status === 403 || res.status === 401) {
-        toast.error("No token included");
-        return;
-      }
-      toast.error("Something Went Wrong");
-    } else {
-      const evt = await res.json();
-      router.push(`/events/${evt.data.attributes.slug}`);
-    }
-  };
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setValues({ ...values, [name]: value });
+  const imageUpload = (e) => {
+    const file = e.target.files;
+    formik.setFieldValue("imageFile", file[0]);
   };
 
   return (
-    <Layout title="Add New Event">
+    <Layout name="Add New Event">
       <Link href="/events">Go Back</Link>
       <h1>Add Event</h1>
       <ToastContainer />
-      <form onSubmit={handleSubmit} className={styles.form}>
+      <form onSubmit={formik.handleSubmit} className={styles.form}>
         <div className={styles.grid}>
           <div>
             <label htmlFor="name">Event Name</label>
@@ -72,8 +95,8 @@ export default function AddEventPage({ token }) {
               type="text"
               id="name"
               name="name"
-              value={values.name}
-              onChange={handleInputChange}
+              onChange={formik.handleChange}
+              value={formik.values.name}
             />
           </div>
           <div>
@@ -82,8 +105,8 @@ export default function AddEventPage({ token }) {
               type="text"
               name="performers"
               id="performers"
-              value={values.performers}
-              onChange={handleInputChange}
+              onChange={formik.handleChange}
+              value={formik.values.performers}
             />
           </div>
           <div>
@@ -92,8 +115,8 @@ export default function AddEventPage({ token }) {
               type="text"
               name="venue"
               id="venue"
-              value={values.venue}
-              onChange={handleInputChange}
+              onChange={formik.handleChange}
+              value={formik.values.venue}
             />
           </div>
           <div>
@@ -102,8 +125,8 @@ export default function AddEventPage({ token }) {
               type="text"
               name="address"
               id="address"
-              value={values.address}
-              onChange={handleInputChange}
+              onChange={formik.handleChange}
+              value={formik.values.address}
             />
           </div>
           <div>
@@ -112,8 +135,8 @@ export default function AddEventPage({ token }) {
               type="date"
               name="date"
               id="date"
-              value={values.date}
-              onChange={handleInputChange}
+              onChange={formik.handleChange}
+              value={formik.values.date}
             />
           </div>
           <div>
@@ -122,8 +145,8 @@ export default function AddEventPage({ token }) {
               type="text"
               name="time"
               id="time"
-              value={values.time}
-              onChange={handleInputChange}
+              onChange={formik.handleChange}
+              value={formik.values.time}
             />
           </div>
         </div>
@@ -134,12 +157,23 @@ export default function AddEventPage({ token }) {
             type="text"
             name="description"
             id="description"
-            value={values.description}
-            onChange={handleInputChange}
+            onChange={formik.handleChange}
+            value={formik.values.description}
           ></textarea>
         </div>
-
-        <input type="submit" value="Add Event" className="btn" />
+        <div>
+          <label htmlFor="email">image-file-upload</label>
+          <input
+            id="file"
+            name="file"
+            type="file"
+            onChange={imageUpload}
+            value={formik.values.email}
+          />
+        </div>
+        <button className="btn" type="submit">
+          Add Event
+        </button>
       </form>
     </Layout>
   );
