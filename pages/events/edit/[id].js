@@ -86,66 +86,6 @@ export default function EditEventPage({ evt }) {
     formik.setFieldValue("imageFile", file[0]);
   };
 
-  // const [values, setValues] = useState({
-  //   name: name,
-  //   performers: performers,
-  //   venue: venue,
-  //   address: address,
-  //   date: data,
-  //   time: time,
-  //   description: description,
-  // });
-
-  // const [imagePreview, setImagePreview] = useState(
-  //   image.data !== null ? image.data?.attributes.formats.thumbnail.url : null
-  // );
-
-  // const [showModal, setShowModal] = useState(false);
-
-  // const router = useRouter();
-
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-
-  //   // Validation
-  //   const hasEmptyFields = Object.values(values).some(
-  //     (element) => element === ""
-  //   );
-
-  //   if (hasEmptyFields) {
-  //     toast.error("Please fill in all fields");
-  //   }
-
-  //   const res = await fetch(`${API_URL}/events/${evt.data.id}`, {
-  //     method: "PUT",
-  //     headers: { "Content-Type": "application/json" },
-  //     body: JSON.stringify({ data: values }),
-  //   });
-
-  //   if (!res.ok) {
-  //     // if (res.status === 403 || res.status === 401) {
-  //     //   toast.error("No token included");
-  //     //   return;
-  //     // }
-  //     toast.error("Something Went Wrong");
-  //   } else {
-  //     const evt = await res.json();
-  //     router.push(`/events/${evt.data.attributes.slug}`);
-  //   }
-  // };
-
-  // const handleInputChange = (e) => {
-  //   const { name, value } = e.target;
-  //   setValues({ ...values, [name]: value });
-  // };
-
-  // const imageUploaded = async (e) => {
-  //   const res = await fetch(`${API_URL}/events/${evt.data.id}`);
-  //   const data = await res.json();
-  //   setImagePreview(image.data.attributes.formats.thumbnail.url);
-  //   setShowModal(false);
-  // };
-
   return (
     <Layout title="Add New Event">
       <Link href="/events">Go Back</Link>
